@@ -12,7 +12,7 @@ const app = new Hono<{ Bindings: Bindings }>();
 // Create a group
 app.post("/api/groups", async (c) => {
   const body = await c.req.json<{ name: string }>();
-  const name = body.name?.trim();
+  const name = body.name?.trim().toLowerCase();
 
   if (!name) {
     return c.json({ error: "Group name is required" }, 400);
@@ -36,7 +36,7 @@ app.post("/api/groups", async (c) => {
 
 // Get a group and its squares
 app.get("/api/groups/:name", async (c) => {
-  const name = c.req.param("name");
+  const name = c.req.param("name").toLowerCase();
   const group = await getGroup(c.env.DB, name);
 
   if (!group) {
@@ -68,7 +68,7 @@ app.get("/api/groups/:name", async (c) => {
 
 // Claim a square
 app.post("/api/groups/:name/squares", async (c) => {
-  const name = c.req.param("name");
+  const name = c.req.param("name").toLowerCase();
   const group = await getGroup(c.env.DB, name);
 
   if (!group) {
@@ -122,7 +122,7 @@ app.post("/api/groups/:name/squares", async (c) => {
 
 // Unclaim a square
 app.delete("/api/groups/:name/squares/:row/:col", async (c) => {
-  const name = c.req.param("name");
+  const name = c.req.param("name").toLowerCase();
   const group = await getGroup(c.env.DB, name);
 
   if (!group) {
