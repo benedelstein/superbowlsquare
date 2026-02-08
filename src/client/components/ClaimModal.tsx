@@ -21,7 +21,7 @@ export default function ClaimModal({
   onUnclaim,
   onClose,
 }: ClaimModalProps) {
-  const [playerName, setPlayerName] = useState("");
+  const [playerName, setPlayerName] = useState(() => localStorage.getItem("playerName") || "");
   const [squareName, setSquareName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -35,6 +35,7 @@ export default function ClaimModal({
     setLoading(true);
     setError("");
     try {
+      localStorage.setItem("playerName", playerName.trim());
       await onClaim(playerName.trim(), squareName.trim());
     } catch (err: any) {
       setError(err.message || "Failed to claim square");

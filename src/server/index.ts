@@ -4,6 +4,7 @@ import type { D1Database } from "@cloudflare/workers-types";
 
 type Bindings = {
   DB: D1Database;
+  ASSETS: { fetch: typeof fetch };
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -136,6 +137,27 @@ app.delete("/api/groups/:name/squares/:row/:col", async (c) => {
   }
 
   return c.json({ ok: true });
+});
+
+// Serve group pages with OG meta tags
+app.get("/groups/:name", async (c) => {
+  const name = decodeURIComponent(c.req.param("name"));
+  const url = new URL(c.req.url);
+  // Fetch index.html from the ASSETS binding (avoids subrequest loop)
+  const assetRes = await c.env.ASSETS.fetch(new Request(`${url.origin}/index.html`));
+  const html = await assetRes.text();
+
+  const safe = name.replace(/["<>&]/g, "");
+  const title = `Join group ${safe} | Super Bowl Squares`;
+  const description = `Claim your squares in the ${safe} Super Bowl Squares pool!`;
+
+  const ogTags = `<meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${description}" />
+    <meta name="description" content="${description}" />
+    <title>${title}</title>`;
+
+  const injected = html.replace("<title>Super Bowl Squares</title>", ogTags);
+  return c.html(injected);
 });
 
 export default app;

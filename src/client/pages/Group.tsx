@@ -165,24 +165,24 @@ export default function Group() {
       </div>
 
       {/* Team labels */}
-      <div className="mb-2 flex items-end gap-2">
-        <div className="w-[60px]"></div>
-        <p className="text-sm font-bold text-gray-700 text-center flex-1">
+      <div className="mb-1 flex items-end gap-1">
+        <div className="w-[24px] shrink-0"></div>
+        <p className="text-xs sm:text-sm font-bold text-gray-700 text-center flex-1">
           Patriots
         </p>
       </div>
 
-      <div className="flex gap-2">
-        <div className="flex items-center">
+      <div className="flex gap-1">
+        <div className="flex items-center shrink-0">
           <p
-            className="text-sm font-bold text-gray-700 whitespace-nowrap"
+            className="text-xs sm:text-sm font-bold text-gray-700 whitespace-nowrap"
             style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
           >
             Seahawks
           </p>
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <Grid
             revealed={group.revealed}
             rowNumbers={group.row_numbers}

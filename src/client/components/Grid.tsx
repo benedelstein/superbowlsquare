@@ -22,10 +22,10 @@ export default function Grid({ revealed, rowNumbers, colNumbers, squares, onSqua
   }
 
   return (
-    <div className="overflow-x-auto">
-      <div className="inline-grid gap-0" style={{ gridTemplateColumns: `auto repeat(10, minmax(60px, 1fr))` }}>
+    <div>
+      <div className="grid gap-0" style={{ gridTemplateColumns: `24px repeat(10, 1fr)` }}>
         {/* Top-left corner: empty */}
-        <div className="bg-gray-800 text-white font-bold flex items-center justify-center p-2 text-sm">
+        <div className="bg-gray-800 text-white font-bold flex items-center justify-center p-0.5 text-xs">
 
         </div>
 
@@ -33,7 +33,7 @@ export default function Grid({ revealed, rowNumbers, colNumbers, squares, onSqua
         {Array.from({ length: 10 }, (_, c) => (
           <div
             key={`col-${c}`}
-            className="bg-gray-800 text-white font-bold flex items-center justify-center p-2 text-sm"
+            className="bg-gray-800 text-white font-bold flex items-center justify-center p-0.5 text-xs"
           >
             {revealed && colNumbers ? colNumbers[c] : "?"}
           </div>
@@ -45,7 +45,7 @@ export default function Grid({ revealed, rowNumbers, colNumbers, squares, onSqua
             {/* Row header */}
             <div
               key={`row-${r}`}
-              className="bg-gray-800 text-white font-bold flex items-center justify-center p-2 text-sm"
+              className="bg-gray-800 text-white font-bold flex items-center justify-center p-0.5 text-xs"
             >
               {revealed && rowNumbers ? rowNumbers[r] : "?"}
             </div>

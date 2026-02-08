@@ -31,7 +31,7 @@ function shuffle(): number[] {
 export async function createGroup(db: D1Database, name: string): Promise<Group> {
   const rowNumbers = JSON.stringify(shuffle());
   const colNumbers = JSON.stringify(shuffle());
-  const revealTime = "2025-02-09T23:30:00Z"; // 5:30 PM CT
+  const revealTime = "2026-02-08T23:30:00Z"; // 5:30 PM CT
 
   const result = await db
     .prepare(
