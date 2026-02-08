@@ -14,6 +14,7 @@ CREATE TABLE squares (
   col INTEGER NOT NULL CHECK(col BETWEEN 0 AND 9),
   player_name TEXT NOT NULL,
   square_name TEXT,
+  user_id TEXT NOT NULL,
   claimed_at TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE(group_id, row, col)
 );

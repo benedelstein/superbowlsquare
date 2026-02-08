@@ -3,11 +3,21 @@ import { useParams, Link } from "react-router";
 import Grid from "../components/Grid";
 import ClaimModal from "../components/ClaimModal";
 
+function getUserId(): string {
+  let id = localStorage.getItem("userId");
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("userId", id);
+  }
+  return id;
+}
+
 interface SquareData {
   row: number;
   col: number;
   player_name: string;
   square_name: string | null;
+  user_id: string;
 }
 
 interface GroupData {
@@ -93,6 +103,7 @@ export default function Group() {
         col: selectedSquare.col,
         playerName,
         squareName: squareName || undefined,
+        userId: getUserId(),
       }),
     });
 
@@ -109,7 +120,7 @@ export default function Group() {
     if (!selectedSquare || !group) return;
 
     const res = await fetch(
-      `/api/groups/${encodeURIComponent(group.name)}/squares/${selectedSquare.row}/${selectedSquare.col}`,
+      `/api/groups/${encodeURIComponent(group.name)}/squares/${selectedSquare.row}/${selectedSquare.col}?userId=${encodeURIComponent(getUserId())}`,
       { method: "DELETE" }
     );
 
@@ -208,6 +219,7 @@ export default function Group() {
           col={selectedSquare.col}
           existingPlayer={selectedSquareData?.player_name}
           existingSquareName={selectedSquareData?.square_name}
+          existingUserId={selectedSquareData?.user_id}
           revealed={group.revealed}
           onClaim={handleClaim}
           onUnclaim={handleUnclaim}

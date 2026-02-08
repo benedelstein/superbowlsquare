@@ -5,6 +5,7 @@ interface ClaimModalProps {
   col: number;
   existingPlayer?: string;
   existingSquareName?: string | null;
+  existingUserId?: string;
   revealed: boolean;
   onClaim: (playerName: string, squareName: string) => Promise<void>;
   onUnclaim: () => Promise<void>;
@@ -16,6 +17,7 @@ export default function ClaimModal({
   col,
   existingPlayer,
   existingSquareName,
+  existingUserId,
   revealed,
   onClaim,
   onUnclaim,
@@ -27,6 +29,7 @@ export default function ClaimModal({
   const [error, setError] = useState("");
 
   const isClaimed = !!existingPlayer;
+  const isOwner = isClaimed && existingUserId === localStorage.getItem("userId");
 
   async function handleClaim(e: React.FormEvent) {
     e.preventDefault();
@@ -72,7 +75,7 @@ export default function ClaimModal({
 
             {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
 
-            {!revealed && (
+            {!revealed && isOwner && (
               <button
                 onClick={handleUnclaim}
                 disabled={loading}

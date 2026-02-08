@@ -60,6 +60,7 @@ app.get("/api/groups/:name", async (c) => {
       col: s.col,
       player_name: s.player_name,
       square_name: s.square_name,
+      user_id: s.user_id,
       claimed_at: s.claimed_at,
     })),
   });
@@ -85,6 +86,7 @@ app.post("/api/groups/:name/squares", async (c) => {
     col: number;
     playerName: string;
     squareName?: string;
+    userId: string;
   }>();
 
   if (body.row < 0 || body.row > 9 || body.col < 0 || body.col > 9) {
@@ -95,6 +97,10 @@ app.post("/api/groups/:name/squares", async (c) => {
     return c.json({ error: "Player name is required" }, 400);
   }
 
+  if (!body.userId?.trim()) {
+    return c.json({ error: "User ID is required" }, 400);
+  }
+
   try {
     const square = await claimSquare(
       c.env.DB,
@@ -102,7 +108,8 @@ app.post("/api/groups/:name/squares", async (c) => {
       body.row,
       body.col,
       body.playerName.trim(),
-      body.squareName?.trim() || null
+      body.squareName?.trim() || null,
+      body.userId.trim()
     );
     return c.json(square, 201);
   } catch (e: any) {
@@ -130,10 +137,18 @@ app.delete("/api/groups/:name/squares/:row/:col", async (c) => {
 
   const row = parseInt(c.req.param("row"));
   const col = parseInt(c.req.param("col"));
+  const userId = c.req.query("userId");
 
-  const deleted = await unclaimSquare(c.env.DB, group.id, row, col);
-  if (!deleted) {
+  if (!userId) {
+    return c.json({ error: "User ID is required" }, 400);
+  }
+
+  const result = await unclaimSquare(c.env.DB, group.id, row, col, userId);
+  if (result === "not_found") {
     return c.json({ error: "Square not found" }, 404);
+  }
+  if (result === "forbidden") {
+    return c.json({ error: "You can only remove your own squares" }, 403);
   }
 
   return c.json({ ok: true });

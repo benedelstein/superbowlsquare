@@ -16,6 +16,7 @@ export interface Square {
   col: number;
   player_name: string;
   square_name: string | null;
+  user_id: string;
   claimed_at: string;
 }
 
@@ -64,13 +65,14 @@ export async function claimSquare(
   row: number,
   col: number,
   playerName: string,
-  squareName: string | null
+  squareName: string | null,
+  userId: string
 ): Promise<Square> {
   const result = await db
     .prepare(
-      "INSERT INTO squares (group_id, row, col, player_name, square_name) VALUES (?, ?, ?, ?, ?) RETURNING *"
+      "INSERT INTO squares (group_id, row, col, player_name, square_name, user_id) VALUES (?, ?, ?, ?, ?, ?) RETURNING *"
     )
-    .bind(groupId, row, col, playerName, squareName)
+    .bind(groupId, row, col, playerName, squareName, userId)
     .first<Square>();
 
   return result!;
@@ -80,12 +82,21 @@ export async function unclaimSquare(
   db: D1Database,
   groupId: number,
   row: number,
-  col: number
-): Promise<boolean> {
-  const result = await db
+  col: number,
+  userId: string
+): Promise<"ok" | "not_found" | "forbidden"> {
+  const square = await db
+    .prepare("SELECT user_id FROM squares WHERE group_id = ? AND row = ? AND col = ?")
+    .bind(groupId, row, col)
+    .first<{ user_id: string }>();
+
+  if (!square) return "not_found";
+  if (square.user_id !== userId) return "forbidden";
+
+  await db
     .prepare("DELETE FROM squares WHERE group_id = ? AND row = ? AND col = ?")
     .bind(groupId, row, col)
     .run();
 
-  return result.meta.changes > 0;
+  return "ok";
 }
