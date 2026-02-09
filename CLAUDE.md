@@ -47,7 +47,9 @@ pnpm dev
 
 ## Deploying
 
-Requires `CLOUDFLARE_API_TOKEN` in `.env` (gitignored). The token needs Workers Scripts Edit and D1 Edit permissions.
+Pushes to `master` automatically deploy via GitHub Actions. The workflow requires a `CLOUDFLARE_API_TOKEN` secret set in the repo.
+
+For manual deploys, requires `CLOUDFLARE_API_TOKEN` in `.env` (gitignored). The token needs Workers Scripts Edit and D1 Edit permissions.
 
 ```bash
 # First time: create remote D1 database

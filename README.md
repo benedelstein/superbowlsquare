@@ -33,6 +33,8 @@ pnpm dev
 
 ## Deploy
 
+Pushes to `master` automatically deploy via GitHub Actions.
+
 ```bash
 # Create remote D1 database (first time only)
 npx wrangler d1 create superbowlsquare-db
@@ -41,7 +43,7 @@ npx wrangler d1 create superbowlsquare-db
 # Run schema migration
 npx wrangler d1 execute superbowlsquare-db --remote --file=schema.sql
 
-# Build and deploy
+# Build and deploy (manual)
 pnpm build && npx wrangler deploy
 ```
 
