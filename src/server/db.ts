@@ -46,7 +46,7 @@ export async function createGroup(db: D1Database, name: string): Promise<Group> 
 
 export async function getGroup(db: D1Database, name: string): Promise<Group | null> {
   return db
-    .prepare("SELECT * FROM groups WHERE name = ?")
+    .prepare("SELECT * FROM groups WHERE name = ? COLLATE NOCASE")
     .bind(name)
     .first<Group>();
 }
